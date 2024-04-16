@@ -20,5 +20,3 @@ class Direction:
         self.room = room 
         self.locked = locked 
         self.locked_description = locked_description
-
-

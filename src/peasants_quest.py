@@ -91,7 +91,7 @@ class Quest():
 
         game.link(small_cavern, large_cavern)
         game.link(windy_passage, treasure_room)
-        game.set_start_room(entrance)
+        game.set_current_room(entrance)
 
     def start(self):
         # run the dungeon!
