@@ -2,7 +2,7 @@ import argparse
 from typing import Any
 
 from framework.util import load_game, list_saves
-from peasants_quest import Quest
+from games.peasants_quest import Quest
 
 def parse_args() -> Any:
     parser = argparse.ArgumentParser()
@@ -13,7 +13,6 @@ def parse_args() -> Any:
     parser.add_argument("--games", help="list games", action="store_true")
 
     return parser.parse_args()
-
 
 def main() -> None:
     args = parse_args()
