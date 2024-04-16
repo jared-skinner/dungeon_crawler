@@ -7,12 +7,16 @@ class Game:
     def __init__(self) -> None:
         self.rooms = []
         self.current_room: Room
+        self.splashscreen: str = ""
 
     def set_current_room(self, room: Room) -> None:
         self.current_room = room
 
     def start(self) -> None:
         self.main_loop()
+
+    def set_splashscreen(self, splashscreen):
+        self.splashscreen = splashscreen
 
     def main_loop(self) -> None:
         """
@@ -25,6 +29,9 @@ class Game:
         actions = ["go", "look", "options", "directions", "help", "exit", "save"]
 
         action = None
+
+        print(self.splashscreen)
+
         while True:
             if action == None:
                 self.message(self.current_room.description)
