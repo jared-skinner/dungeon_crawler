@@ -1,5 +1,7 @@
 from framework.game import Game
 from framework.room import Room
+from framework.item import Item
+from framework.interaction import Interaction
 
 class Quest():
     """
@@ -18,10 +20,29 @@ class Quest():
             name = "entrance",
             description = "Welcome weary traveler to the cave of DOOM!!!",
             long_description = """
-    There's moss growing on the walls and crumbly stones everywhere.  The ground feels pretty solid,
-    but it looks like you are the first to come here in a very long time.  Step carefully...
+    There's moss growing on the walls and crumbly stones everywhere.
+
+    You notice some rope and a knife on the ground.  They both look pretty new.  
+
+    The ground feels pretty solid, but it looks like you are the first to come here in a very long time.  Step carefully...
             """
         ))
+
+        rope = Item(name = "rope", can_get = True)
+        knife = Item(name = "knife", can_get = True)
+        def cut_rope(rope): rope.name = "rope cut in two (you really ought to be more careful what you do with that knife...)"
+
+        cut = Interaction(
+            name = "cut",
+            actor = knife,
+            patient = rope,
+            action = cut_rope,
+            description = "The knife cuts the rope cleanly in two.  Now you have a knife an some useless rope?"
+        )
+        game.add_interaction(cut)
+
+        entrance.add_item(knife)
+        entrance.add_item(rope)
 
         large_cavern = game.add_room(Room(
             name = "large cavern",
@@ -118,7 +139,6 @@ r"""
 
                 QUEST 
                     - A Game by Jared Skinner
-
 
 
 """

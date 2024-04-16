@@ -1,3 +1,5 @@
+from framework.item import Item
+
 class Room:
     """
     The Room class gives us a template for creating rooms.  Each room has a name, a description,
@@ -11,9 +13,13 @@ class Room:
         self.long_description = long_description
         self.directions = {}
         self.final = final
+        self.items = {}
 
     def add_direction(self, room, locked: bool, locked_description: str = "") -> None:
         self.directions[room.name] = Direction(room, locked, locked_description)
+
+    def add_item(self, item: Item) -> None:
+        self.items[item.name] = item
 
 class Direction:
     def __init__(self, room: Room, locked: bool, locked_description: str = ""):
