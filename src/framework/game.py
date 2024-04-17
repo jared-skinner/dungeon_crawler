@@ -14,6 +14,7 @@ class Game:
         # TODO: let player enter their name
         self.player: Person = Person("test")
         self.splashscreen: str = ""
+        self.introduction: str = ""
         self.interactions: list[Interaction] = []
 
     def get_thing(self, thing) -> Any:
@@ -47,10 +48,7 @@ class Game:
             return
 
         self.player.inventory.add_item(item)
-
-        # TODO
-        #self.current_room.remove_item(item)
-
+        self.current_room.remove_item(item)
 
     def combine(self, command: str) -> None:
         """
@@ -111,60 +109,70 @@ class Game:
     def set_current_room(self, room: Room) -> None:
         self.current_room = room
 
-    def set_splashscreen(self, splashscreen):
+    def set_splashscreen(self, splashscreen: str) -> None:
         self.splashscreen = splashscreen
 
-    def main_loop(self):
-        actions = ["go", "look", "options", "directions", "help", "exit", "save", "with", "inventory"]
+    def set_introduction(self, introduction: str) -> None:
+        self.introduction = introduction
 
-        action = None
-        while True:
-            if action == None:
+
+    def game_command(self, command):
+        if command == "look":
+            if self.current_room.long_description == "":
                 self.message(self.current_room.description)
-            elif action == "":
+            else:
+                self.message(self.current_room.long_description)
+        elif command in ("options", "help"):
+            self.message("the options are:")
+            for option in command:
+                print(f"   * {option}")
+        elif command == "exit":
+            sys.exit()
+        elif command == "directions":
+            directions_message = "the directions are..."
+            for direction in self.current_room.directions:
+                directions_message += f"\n    * {direction}"
+
+            self.message(directions_message)
+        elif command.startswith("go "):
+            location = command[3:]
+            if location not in self.current_room.directions:
+                self.message("you can't go there!")
+            else:
+                self.current_room = self.current_room.directions[location].room
+                self.message(self.current_room.description)
+
+                if self.current_room.final:
+                    sys.exit()
+        elif command.startswith("save "):
+            save_name = command[5:]
+            save_game(self, save_name)
+        elif command.startswith("with "):
+            self.combine(command)
+        elif command == "inventory":
+            self.print_inventory()
+        elif command.startswith("get "):
+            self.get(command[4:])
+
+    def main_loop(self):
+        game_commands = ["go", "look", "options", "directions", "help", "exit", "save", "with", "inventory"]
+
+        command = None
+        while True:
+            if command == None:
+                self.message(self.current_room.description)
+            elif command == "":
                 # do nothing
                 pass
-            elif action == "look":
-                if self.current_room.long_description == "":
-                    self.message(self.current_room.description)
-                else:
-                    self.message(self.current_room.long_description)
-            elif action in ("options", "help"):
-                self.message("the options are:")
-                for option in actions:
-                    print(f"   * {option}")
-            elif action == "exit":
-                sys.exit()
-            elif action == "directions":
-                directions_message = "the directions are..."
-                for direction in self.current_room.directions:
-                    directions_message += f"\n    * {direction}"
-
-                self.message(directions_message)
-            elif action.startswith("go "):
-                location = action[3:]
-                if location not in self.current_room.directions:
-                    self.message("you can't go there!")
-                else:
-                    self.current_room = self.current_room.directions[location].room
-                    self.message(self.current_room.description)
-
-                    if self.current_room.final:
-                        sys.exit()
-            elif action.startswith("save "):
-                save_name = action[5:]
-                save_game(self, save_name)
-            elif action.startswith("with "):
-                self.combine(action)
-            elif action == "inventory":
-                self.print_inventory()
-            elif action.startswith("get "):
-                self.get(action[4:])
+            elif command in game_commands:
+                self.game_command(command)
+            elif command in self.current_room.commands:
+                self.current_room.room_command(command)
             else:
                 self.message("THAT is not an option!")
 
             # get next action
-            action = input("> ")
+            command = input("> ")
 
     def start(self) -> None:
         """
@@ -173,4 +181,7 @@ class Game:
         action.
         """
         print(self.splashscreen)
+
+        print(self.introduction)
+
         self.main_loop()

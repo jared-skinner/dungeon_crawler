@@ -5,6 +5,7 @@ class Item:
         self.name = name
         self.interactions = []
         self.can_get = can_get
+        self.description = description
 
         # the thing and what it does
         # for instance: with knife cut rope

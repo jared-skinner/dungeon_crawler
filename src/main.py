@@ -2,7 +2,7 @@ import argparse
 from typing import Any
 
 from framework.util import load_game, list_saves
-from games.peasants_quest import Quest
+from games.quest import Quest
 
 def parse_args() -> Any:
     parser = argparse.ArgumentParser()
